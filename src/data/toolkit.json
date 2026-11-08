@@ -1,0 +1,647 @@
+{
+ "prefixes": [
+  {
+   "part": "a-, an-",
+   "meaning": "without",
+   "examples": "apathy, atheist, anarchy"
+  },
+  {
+   "part": "mal-",
+   "meaning": "bad",
+   "examples": "malice, malnutrition, malign"
+  },
+  {
+   "part": "ante-",
+   "meaning": "before",
+   "examples": "antecedent, antenatal"
+  },
+  {
+   "part": "mis-",
+   "meaning": "wrongly",
+   "examples": "misguide, misinterpret"
+  },
+  {
+   "part": "anti-",
+   "meaning": "against",
+   "examples": "antidote, antiseptic"
+  },
+  {
+   "part": "mono-",
+   "meaning": "one",
+   "examples": "monotonous, monopoly"
+  },
+  {
+   "part": "auto-",
+   "meaning": "self",
+   "examples": "autobiography, autonomy"
+  },
+  {
+   "part": "omni-",
+   "meaning": "all",
+   "examples": "omnipotent, omniscient"
+  },
+  {
+   "part": "bene-",
+   "meaning": "good",
+   "examples": "benefit, benevolent, benign"
+  },
+  {
+   "part": "poly-",
+   "meaning": "many",
+   "examples": "polyglot, polygamy"
+  },
+  {
+   "part": "bi-",
+   "meaning": "two",
+   "examples": "bilateral, bicycle"
+  },
+  {
+   "part": "post-",
+   "meaning": "after",
+   "examples": "postpone, posthumous"
+  },
+  {
+   "part": "circum-",
+   "meaning": "around",
+   "examples": "circumference, circumvent"
+  },
+  {
+   "part": "pre-",
+   "meaning": "before",
+   "examples": "predict, premature"
+  },
+  {
+   "part": "co-, con-",
+   "meaning": "together",
+   "examples": "cooperate, converge"
+  },
+  {
+   "part": "pro-",
+   "meaning": "forward, for",
+   "examples": "progress, proponent"
+  },
+  {
+   "part": "contra-",
+   "meaning": "against",
+   "examples": "contradict, contrary"
+  },
+  {
+   "part": "re-",
+   "meaning": "again, back",
+   "examples": "recur, retract"
+  },
+  {
+   "part": "de-",
+   "meaning": "down, away",
+   "examples": "descend, deplete, deter"
+  },
+  {
+   "part": "semi-",
+   "meaning": "half",
+   "examples": "semicircle, semiconductor"
+  },
+  {
+   "part": "dis-",
+   "meaning": "not, apart",
+   "examples": "dissent, disparity"
+  },
+  {
+   "part": "sub-",
+   "meaning": "under",
+   "examples": "submerge, subordinate"
+  },
+  {
+   "part": "ex-",
+   "meaning": "out",
+   "examples": "exclude, exonerate, expel"
+  },
+  {
+   "part": "super-",
+   "meaning": "above",
+   "examples": "superficial, superfluous"
+  },
+  {
+   "part": "hyper-",
+   "meaning": "too much",
+   "examples": "hypertension, hyperbole"
+  },
+  {
+   "part": "trans-",
+   "meaning": "across",
+   "examples": "transient, transparent"
+  },
+  {
+   "part": "hypo-",
+   "meaning": "under, too little",
+   "examples": "hypocrite, hypothermia"
+  },
+  {
+   "part": "un-, in-, im-",
+   "meaning": "not",
+   "examples": "unjust, inept, impartial"
+  },
+  {
+   "part": "inter-",
+   "meaning": "between",
+   "examples": "intervene, international"
+  },
+  {
+   "part": "ultra-",
+   "meaning": "beyond",
+   "examples": "ultraviolet, ultramodern"
+  }
+ ],
+ "roots": [
+  {
+   "part": "anthropo",
+   "meaning": "man",
+   "examples": "philanthropy, misanthrope"
+  },
+  {
+   "part": "path",
+   "meaning": "feeling",
+   "examples": "apathy, empathy, sympathy"
+  },
+  {
+   "part": "aud",
+   "meaning": "hear",
+   "examples": "audible, audience"
+  },
+  {
+   "part": "ped, pod",
+   "meaning": "foot",
+   "examples": "impede, pedestrian, tripod"
+  },
+  {
+   "part": "bio",
+   "meaning": "life",
+   "examples": "biology, biography"
+  },
+  {
+   "part": "phil",
+   "meaning": "love",
+   "examples": "philanthropy, philosophy"
+  },
+  {
+   "part": "chron",
+   "meaning": "time",
+   "examples": "chronology, anachronism"
+  },
+  {
+   "part": "phobia",
+   "meaning": "fear",
+   "examples": "hydrophobia, claustrophobia"
+  },
+  {
+   "part": "cred",
+   "meaning": "believe",
+   "examples": "credible, incredulous"
+  },
+  {
+   "part": "port",
+   "meaning": "carry",
+   "examples": "portable, export, deport"
+  },
+  {
+   "part": "dict",
+   "meaning": "say",
+   "examples": "predict, dictate, verdict"
+  },
+  {
+   "part": "scrib, script",
+   "meaning": "write",
+   "examples": "describe, manuscript"
+  },
+  {
+   "part": "duc",
+   "meaning": "lead",
+   "examples": "conduct, induce"
+  },
+  {
+   "part": "spec",
+   "meaning": "look",
+   "examples": "conspicuous, spectator, inspect"
+  },
+  {
+   "part": "graph",
+   "meaning": "write",
+   "examples": "biography, telegraph"
+  },
+  {
+   "part": "tang, tact",
+   "meaning": "touch",
+   "examples": "tangible, contact, intact"
+  },
+  {
+   "part": "loqu",
+   "meaning": "speak",
+   "examples": "eloquent, loquacious"
+  },
+  {
+   "part": "ven",
+   "meaning": "come",
+   "examples": "convene, intervene"
+  },
+  {
+   "part": "luc",
+   "meaning": "light",
+   "examples": "lucid, translucent"
+  },
+  {
+   "part": "vid, vis",
+   "meaning": "see",
+   "examples": "evident, visible, vision"
+  },
+  {
+   "part": "magn",
+   "meaning": "great",
+   "examples": "magnify, magnanimous"
+  },
+  {
+   "part": "vinc",
+   "meaning": "conquer",
+   "examples": "invincible, convince"
+  },
+  {
+   "part": "mort",
+   "meaning": "death",
+   "examples": "mortal, immortal"
+  },
+  {
+   "part": "voc",
+   "meaning": "call",
+   "examples": "vocal, revoke, provoke"
+  }
+ ],
+ "connectors": [
+  {
+   "direction": "Continues (same direction)",
+   "words": "and, also, moreover, furthermore, besides, in addition, likewise, similarly, indeed, in fact",
+   "rule": "The blank matches the polarity of the first half. If the first half is positive, the blank is positive."
+  },
+  {
+   "direction": "Turns (opposite direction)",
+   "words": "but, however, yet, although, though, even though, despite, in spite of, nevertheless, nonetheless, whereas, while, on the contrary, on the other hand, conversely",
+   "rule": "The blank is the opposite polarity. This is the single most common pattern in the paper."
+  },
+  {
+   "direction": "Cause",
+   "words": "because, since, as, owing to, due to, for",
+   "rule": "The blank explains what came before."
+  },
+  {
+   "direction": "Effect",
+   "words": "so, therefore, hence, thus, consequently, as a result, accordingly",
+   "rule": "The blank is the result of what came before."
+  },
+  {
+   "direction": "Condition",
+   "words": "if, unless, provided that, in case, otherwise",
+   "rule": "Unless already means 'if not' — never add another negative."
+  },
+  {
+   "direction": "Example",
+   "words": "for instance, for example, such as, namely",
+   "rule": "The blank is a specific case of the general statement before it."
+  },
+  {
+   "direction": "Sequence",
+   "words": "first, then, next, afterwards, finally, meanwhile, subsequently",
+   "rule": "Order in time; rarely changes polarity."
+  }
+ ],
+ "confusables": [
+  {
+   "pair": "Accept / Except",
+   "difference": "to receive / other than",
+   "hook": "ACCEPT the gift; everyone EXCEPT him — EX means out",
+   "options": [
+    "Accept",
+    "Except"
+   ],
+   "sentence": "Everyone passed the test ___ Bilal.",
+   "answer": "Except"
+  },
+  {
+   "pair": "Affect / Effect",
+   "difference": "verb, to influence / noun, the result",
+   "hook": "Affect is the Action; Effect is the End result",
+   "options": [
+    "Affect",
+    "Effect"
+   ],
+   "sentence": "The new law had a positive ___ on traffic.",
+   "answer": "Effect"
+  },
+  {
+   "pair": "Advice / Advise",
+   "difference": "noun / verb",
+   "hook": "AdviCe is a thing (like iCe); adviSe is to do (like Say)",
+   "options": [
+    "Advice",
+    "Advise"
+   ],
+   "sentence": "I would ___ you to revise daily.",
+   "answer": "Advise"
+  },
+  {
+   "pair": "Principal / Principle",
+   "difference": "head of a school; main / a rule",
+   "hook": "The princiPAL is your PAL; a principLE is a ruLE",
+   "options": [
+    "Principal",
+    "Principle"
+   ],
+   "sentence": "Honesty is a basic ___ of police service.",
+   "answer": "Principle"
+  },
+  {
+   "pair": "Stationary / Stationery",
+   "difference": "not moving / writing material",
+   "hook": "StationEry = Envelopes and paper; stationAry = standing still",
+   "options": [
+    "Stationary",
+    "Stationery"
+   ],
+   "sentence": "The truck was ___ at the signal.",
+   "answer": "Stationary"
+  },
+  {
+   "pair": "Complement / Compliment",
+   "difference": "something that completes / praise",
+   "hook": "ComplEment complEtes; complIment is what I like to hear",
+   "options": [
+    "Complement",
+    "Compliment"
+   ],
+   "sentence": "The officer received a ___ for his bravery.",
+   "answer": "Compliment"
+  },
+  {
+   "pair": "Ingenious / Ingenuous",
+   "difference": "cleverly inventive / innocently frank",
+   "hook": "IngeniOus has a GENIUS in it",
+   "options": [
+    "Ingenious",
+    "Ingenuous"
+   ],
+   "sentence": "The engineer found an ___ way to save water.",
+   "answer": "Ingenious"
+  },
+  {
+   "pair": "Eminent / Imminent",
+   "difference": "famous / about to happen",
+   "hook": "EMinent men are famous; IMminent is 'in a minute'",
+   "options": [
+    "Eminent",
+    "Imminent"
+   ],
+   "sentence": "The weather office warned that heavy rain was ___.",
+   "answer": "Imminent"
+  },
+  {
+   "pair": "Credible / Credulous",
+   "difference": "believable / too ready to believe",
+   "hook": "A credULOUS person is a gULlible one",
+   "options": [
+    "Credible",
+    "Credulous"
+   ],
+   "sentence": "The court found her evidence ___.",
+   "answer": "Credible"
+  },
+  {
+   "pair": "Elicit / Illicit",
+   "difference": "to draw out / illegal",
+   "hook": "ILlicit is ILlegal",
+   "options": [
+    "Elicit",
+    "Illicit"
+   ],
+   "sentence": "The officer tried to ___ a confession.",
+   "answer": "Elicit"
+  },
+  {
+   "pair": "Loose / Lose",
+   "difference": "not tight / to misplace",
+   "hook": "LOOSE has two o's, like a loose knot; you LOSE one o",
+   "options": [
+    "Loose",
+    "Lose"
+   ],
+   "sentence": "Do not ___ your admit card.",
+   "answer": "Lose"
+  },
+  {
+   "pair": "Its / It's",
+   "difference": "belonging to it / it is",
+   "hook": "If you can say 'it is', use the apostrophe",
+   "options": [
+    "Its",
+    "It's"
+   ],
+   "sentence": "The dog wagged ___ tail.",
+   "answer": "Its"
+  },
+  {
+   "pair": "Their / There / They're",
+   "difference": "possessive / place / they are",
+   "hook": "THERE has HERE in it, a place",
+   "options": [
+    "Their",
+    "There",
+    "They're"
+   ],
+   "sentence": "The candidates left ___ bags outside the hall.",
+   "answer": "Their"
+  },
+  {
+   "pair": "Than / Then",
+   "difference": "comparison / time",
+   "hook": "ThAn for compArison; thEn for timE",
+   "options": [
+    "Than",
+    "Then"
+   ],
+   "sentence": "He is taller ___ his brother.",
+   "answer": "Than"
+  },
+  {
+   "pair": "Weather / Whether",
+   "difference": "climate / if",
+   "hook": "WHETHER offers a choice, like WHICH",
+   "options": [
+    "Weather",
+    "Whether"
+   ],
+   "sentence": "He asked ___ the test was postponed.",
+   "answer": "Whether"
+  },
+  {
+   "pair": "Beside / Besides",
+   "difference": "next to / in addition to",
+   "hook": "BesideS has an S for 'and Something more'",
+   "options": [
+    "Beside",
+    "Besides"
+   ],
+   "sentence": "___ English, the paper tests GK.",
+   "answer": "Besides"
+  },
+  {
+   "pair": "Later / Latter",
+   "difference": "afterwards / the second of two",
+   "hook": "LatTer has two t's, for the second of TWO",
+   "options": [
+    "Later",
+    "Latter"
+   ],
+   "sentence": "Of tea and coffee, I prefer the ___.",
+   "answer": "Latter"
+  },
+  {
+   "pair": "Farther / Further",
+   "difference": "physical distance / extent or degree",
+   "hook": "FARther is about how FAR",
+   "options": [
+    "Farther",
+    "Further"
+   ],
+   "sentence": "The station is ___ than the market.",
+   "answer": "Farther"
+  },
+  {
+   "pair": "Council / Counsel",
+   "difference": "an assembly / advice, or a lawyer",
+   "hook": "CounCil is a Committee; counSel is adviSe",
+   "options": [
+    "Council",
+    "Counsel"
+   ],
+   "sentence": "The city ___ approved the new park.",
+   "answer": "Council"
+  },
+  {
+   "pair": "Desert / Dessert",
+   "difference": "dry land; to abandon / sweet dish",
+   "hook": "DeSSert has two s's because you want Second Servings",
+   "options": [
+    "Desert",
+    "Dessert"
+   ],
+   "sentence": "The Thar ___ is in Sindh.",
+   "answer": "Desert"
+  },
+  {
+   "pair": "Lie / Lay",
+   "difference": "to recline / to place something",
+   "hook": "You LIE down; you LAY a book down — lay needs an object",
+   "options": [
+    "Lie",
+    "Lay"
+   ],
+   "sentence": "Please ___ the files on the table.",
+   "answer": "Lay"
+  },
+  {
+   "pair": "Dual / Duel",
+   "difference": "of two / a fight",
+   "hook": "DUal = DUo; a duEl is a fight",
+   "options": [
+    "Dual",
+    "Duel"
+   ],
+   "sentence": "The two knights fought a ___.",
+   "answer": "Duel"
+  },
+  {
+   "pair": "Moral / Morale",
+   "difference": "of right and wrong / spirit of a group",
+   "hook": "MoralE ends in E, for the Energy of a team",
+   "options": [
+    "Moral",
+    "Morale"
+   ],
+   "sentence": "The victory boosted the team's ___.",
+   "answer": "Morale"
+  },
+  {
+   "pair": "Personal / Personnel",
+   "difference": "private / staff of an organisation",
+   "hook": "PersonnEL has EmpLoyees in it",
+   "options": [
+    "Personal",
+    "Personnel"
+   ],
+   "sentence": "All police ___ must report by 8 a.m.",
+   "answer": "Personnel"
+  },
+  {
+   "pair": "Cite / Site / Sight",
+   "difference": "to quote / a place / vision",
+   "hook": "SIght is Seeing; SIte is a Spot",
+   "options": [
+    "Cite",
+    "Site",
+    "Sight"
+   ],
+   "sentence": "The construction ___ was closed for safety.",
+   "answer": "Site"
+  },
+  {
+   "pair": "Adapt / Adopt",
+   "difference": "to adjust / to take as one's own",
+   "hook": "AdAPT to fit; adOPT is an Option you take on",
+   "options": [
+    "Adapt",
+    "Adopt"
+   ],
+   "sentence": "The couple decided to ___ a child.",
+   "answer": "Adopt"
+  },
+  {
+   "pair": "Envelop / Envelope",
+   "difference": "verb, to wrap / noun, the cover",
+   "hook": "The noun has the extra E on the end",
+   "options": [
+    "Envelop",
+    "Envelope"
+   ],
+   "sentence": "Put the letter in the ___.",
+   "answer": "Envelope"
+  },
+  {
+   "pair": "Historic / Historical",
+   "difference": "important in history / relating to history",
+   "hook": "A hisTORIC day is a big one",
+   "options": [
+    "Historic",
+    "Historical"
+   ],
+   "sentence": "Pakistan's independence was a ___ day.",
+   "answer": "Historic"
+  },
+  {
+   "pair": "Continual / Continuous",
+   "difference": "repeating with breaks / without any break",
+   "hook": "ContinuOUS = One Unbroken Stretch",
+   "options": [
+    "Continual",
+    "Continuous"
+   ],
+   "sentence": "The river flows in a ___ stream.",
+   "answer": "Continuous"
+  },
+  {
+   "pair": "Imply / Infer",
+   "difference": "the speaker hints / the listener concludes",
+   "hook": "The speaker Implies; the listener Infers",
+   "options": [
+    "Imply",
+    "Infer"
+   ],
+   "sentence": "From his silence, I ___ that he was guilty.",
+   "answer": "Infer"
+  }
+ ]
+}
