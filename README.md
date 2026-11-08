@@ -75,3 +75,4 @@ public/        manifest, service worker, icons
 tests/         logic.ts
 ```
 "# Burki-Vocab" 
+# Burki-Vocab
