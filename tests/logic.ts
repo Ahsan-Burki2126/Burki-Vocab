@@ -6,6 +6,7 @@ import { dayMix, ensureToday, replaceWord } from '../src/lib/daily';
 import { addDays } from '../src/lib/dates';
 import { newCard, reviewCard, previewIntervals } from '../src/lib/fsrs';
 import { buildSession, makeQuestion, blankSentence, type QType } from '../src/lib/quiz';
+import { isPristine, mergeStates, signature } from '../src/lib/sync';
 
 let failures = 0;
 const check = (cond: unknown, msg: string) => {
@@ -223,6 +224,48 @@ console.log('Data');
   check(WORDS.every((w) => w.hook && w.hook.length > 5), 'every word has a mnemonic');
   check(WORDS.every((w) => w.urdu && w.example), 'every word has Urdu + example');
   console.log(`  ${WORDS.length} words, ${WORDS.filter((w) => w.source === 'pdf').length} from PDF`);
+}
+
+// ---------- 6. Cloud merge ----------
+console.log('Cloud merge');
+{
+  const day = '2026-11-10';
+  const phone = ensureToday(blank(10), day);
+  const pc = ensureToday(blank(10), day);
+  // phone learns 2 words + bookmarks one; PC learns 1 different word + practises
+  const pw = phone.days[day].words;
+  phone.cards[pw[0]] = newCard(3, day);
+  phone.cards[pw[1]] = newCard(4, day);
+  phone.days[day].learned.push(pw[0], pw[1]);
+  phone.bookmarks.push(pw[0]);
+  phone.updatedAt = 1000;
+  const cw = pc.days[day].words;
+  pc.cards[cw[5]] = newCard(2, day);
+  pc.days[day].learned.push(cw[5]);
+  pc.days[day].practiceAnswered = 6;
+  pc.days[day].practiceCorrect = 5;
+  pc.stats[cw[5]] = { seen: 2, correct: 2 };
+  pc.settings = { ...pc.settings, dailyTarget: 15 };
+  pc.updatedAt = 2000;
+
+  const merged = ensureToday(mergeStates(phone, pc), day);
+  const m = merged.days[day];
+  check([pw[0], pw[1], cw[5]].every((id) => merged.cards[id]), 'cards from both devices kept');
+  check([pw[0], pw[1], cw[5]].every((id) => m.learned.includes(id)), 'learned words from both devices kept');
+  check(m.practiceAnswered === 6 && m.practiceCorrect === 5, 'practice counts take the larger copy');
+  check(merged.bookmarks.includes(pw[0]), 'bookmarks combined');
+  check(merged.settings.dailyTarget === 15, 'settings from the newer copy');
+  check(m.words.length === 15, `day list trimmed/filled to target → ${m.words.length}`);
+  check(new Set(m.words).size === m.words.length, 'no duplicate words in merged day');
+  // idempotent: merging again changes nothing
+  const again = ensureToday(mergeStates(merged, merged), day);
+  check(signature(again) === signature(merged), 'merge is idempotent');
+  // newer review wins for the same card
+  const a = { ...phone, cards: { x: { ...newCard(3, '2026-11-01') } } };
+  const b = { ...pc, cards: { x: { ...newCard(3, '2026-11-01'), last: '2026-11-09', reps: 4 } } };
+  check(mergeStates(a as AppState, b as AppState).cards.x.reps === 4, 'most recently reviewed card wins');
+  check(isPristine(blank(10)) && !isPristine(phone), 'pristine detection');
+  console.log(`  merged day: ${m.learned.length} learned, ${m.words.length} words, target ${m.target}`);
 }
 
 if (failures) {

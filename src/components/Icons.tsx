@@ -117,6 +117,17 @@ export const IconTimer = (p: P) => (
     <path d="M12 9v4l2 2M9 2h6" />
   </svg>
 );
+export const IconUser = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 21a8 8 0 0 1 16 0" />
+  </svg>
+);
+export const IconCloud = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M7 18a5 5 0 1 1 .9-9.9A6 6 0 0 1 19 10a4 4 0 0 1-1 8z" />
+  </svg>
+);
 export const IconSparkle = (p: P) => (
   <svg {...base(p)}>
     <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />

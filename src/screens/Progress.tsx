@@ -5,11 +5,14 @@ import { WORD_BY_ID, WORDS } from '../lib/data';
 import { prettyDate } from '../lib/dates';
 import { accuracy, counts, dueIds, lastNDays, letterCoverage, readiness, streak, weakWords } from '../lib/metrics';
 import { useStore } from '../lib/store';
+import { useAccount } from '../lib/account';
+import { go } from '../lib/router';
 import { TargetPicker } from './Home';
 
 export default function Progress() {
   const { state, today, updateSettings, resetAll, importState } = useStore();
   const { openWord, toast } = useUI();
+  const account = useAccount();
   const c = counts(state);
   const due = dueIds(state, today).length;
   const ready = readiness(state, today);
@@ -175,8 +178,17 @@ export default function Progress() {
         <div>
           <span className="eyebrow">Your data</span>
           <p className="muted small" style={{ margin: '4px 0 10px' }}>
-            Progress is saved in this browser. Export it to move to another phone or computer.
+            {account.user
+              ? `Synced to your account (${account.user.email}). Export makes an extra backup file.`
+              : account.configured
+                ? 'Progress is saved in this browser. Create an account to sync it across devices, or export a backup file.'
+                : 'Progress is saved in this browser. Export it to move to another phone or computer.'}
           </p>
+          {account.configured && !account.user && (
+            <button className="btn btn-soft" style={{ marginBottom: 10 }} onClick={() => go('account')}>
+              Sign in / create account
+            </button>
+          )}
           <div className="row wrap">
             <button className="btn btn-outline" onClick={exportData}>
               Export progress

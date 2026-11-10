@@ -54,13 +54,25 @@ interface Store {
   toggleBookmark: (id: string) => void;
   resetAll: () => void;
   importState: (json: string) => boolean;
+  /** Replace everything (used by cloud sync after merging). Does not bump updatedAt. */
+  replaceState: (next: AppState) => void;
+  /** Wipe all progress on this device (used by "sign out & clear this device"). */
+  clearDevice: () => void;
 }
 
 const Ctx = createContext<Store | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [today, setToday] = useState(() => dateKey());
-  const [state, setState] = useState<AppState>(() => ensureToday(load(), dateKey()));
+  const [state, setRaw] = useState<AppState>(() => ensureToday(load(), dateKey()));
+
+  // every local change is time-stamped so the cloud merge knows which copy is newer
+  const setState = useCallback((fn: (s: AppState) => AppState) => {
+    setRaw((s) => {
+      const next = fn(s);
+      return next === s ? s : { ...next, updatedAt: Date.now() };
+    });
+  }, []);
 
   // roll over at local midnight
   useEffect(() => {
@@ -161,16 +173,33 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     try {
       const parsed = JSON.parse(json) as AppState;
       if (parsed?.version !== 1 || typeof parsed.cards !== 'object' || typeof parsed.days !== 'object') return false;
-      setState(ensureToday({ ...blankState(), ...parsed, settings: { ...DEFAULT_SETTINGS, ...parsed.settings } }, dateKey()));
+      setState(() => ensureToday({ ...blankState(), ...parsed, settings: { ...DEFAULT_SETTINGS, ...parsed.settings } }, dateKey()));
       return true;
     } catch {
       return false;
     }
   }, []);
 
+  const replaceState = useCallback((next: AppState) => setRaw(next), []);
+  const clearDevice = useCallback(() => setRaw(ensureToday(blankState(), dateKey())), []);
+
   const value = useMemo<Store>(
-    () => ({ state, today, setTarget, updateSettings, learn, markKnown, review, recordAnswer, toggleBookmark, resetAll, importState }),
-    [state, today, setTarget, updateSettings, learn, markKnown, review, recordAnswer, toggleBookmark, resetAll, importState],
+    () => ({
+      state,
+      today,
+      setTarget,
+      updateSettings,
+      learn,
+      markKnown,
+      review,
+      recordAnswer,
+      toggleBookmark,
+      resetAll,
+      importState,
+      replaceState,
+      clearDevice,
+    }),
+    [state, today, setTarget, updateSettings, learn, markKnown, review, recordAnswer, toggleBookmark, resetAll, importState, replaceState, clearDevice],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

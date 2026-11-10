@@ -2,7 +2,7 @@
   "name": "Burki Vocab — NPFTAS Vocabulary Trainer",
   "short_name": "Burki Vocab",
   "description": "Daily vocabulary with mnemonics, Urdu meanings and spaced repetition for NPFTAS tests (Islamabad Police, NCCIA) and other Pakistani competitive exams.",
-  "start_url": "./#/home",
+  "start_url": "./#home",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F7F8FC",

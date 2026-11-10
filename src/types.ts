@@ -66,6 +66,8 @@ export interface AppState {
   days: Record<string, DayLog>;
   stats: Record<string, WordStat>;
   bookmarks: string[];
+  /** ms timestamp of the last local change — used when merging with the cloud copy. */
+  updatedAt?: number;
 }
 
 export interface Prefix {

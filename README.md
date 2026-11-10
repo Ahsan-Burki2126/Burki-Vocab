@@ -14,7 +14,7 @@ A daily vocabulary trainer for NPFTAS computer-based tests (Islamabad Police, NC
 - **Exam toolkit**: roots and prefixes, sentence connectors, and 30 confusable pairs with a drill.
 - Works offline after the first visit and can be installed on a phone's home screen (PWA).
 
-Progress is saved in the browser's localStorage. No account or backend is needed.
+Progress is saved in the browser's localStorage, so guest mode needs no backend. **Optional accounts** (free Supabase project) save progress to the cloud and sync it across phone and PC. See *Accounts & sync* below.
 
 ## Run locally
 
@@ -40,6 +40,32 @@ vercel --prod   # production
 ```
 
 `vercel.json` is included. It sets caching headers for the service worker and the hashed assets. The app uses hash routes (`#/learn`), so no rewrite rules are needed.
+
+## Accounts & sync (optional, free)
+
+Without any setup the app runs in guest mode. To let learners create accounts and continue on any device:
+
+1. **Create a Supabase project** at supabase.com (Free plan).
+2. **Create the table:** Dashboard → *SQL Editor* → New query → paste `supabase/schema.sql` → *Run*. It creates a `progress` table with row-level security, so each user can only read and write their own row.
+3. **Sign-up emails** (Dashboard → *Authentication*). Supabase's built-in email sender is for testing only: it sends just a couple of emails per hour, and only to your own team addresses. Pick one:
+   - Turn **off** *Confirm email* (Sign In / Providers → Email). Accounts work instantly with no email needed. This is the simplest option for a personal study app.
+   - Or keep it on and add a free SMTP provider (Brevo, Resend, …) under *SMTP Settings*. This is also needed if other people should be able to use **Forgot password**.
+4. **Redirect URLs** (Authentication → *URL Configuration*): set *Site URL* to your Vercel address (e.g. `https://burki-vocab.vercel.app`) and add `https://burki-vocab.vercel.app/**` and `http://localhost:5173/**` to *Redirect URLs*.
+5. **Keys:** Supabase *Project Settings → API* (or the *Connect* button) → copy the **Project URL** and the **publishable / anon** key. In Vercel: *Project → Settings → Environment Variables*, add
+   ```
+   VITE_SUPABASE_URL=https://<your-project>.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=<publishable or anon key>
+   ```
+   then **redeploy** (Deployments → ⋯ → Redeploy). Vite bakes these in at build time. For local development, copy `.env.example` to `.env.local`.
+
+How sync works:
+- **Sign-up:** progress already on the device is added to the new account.
+- **Signing in on a new device:** it downloads your progress.
+- **Two devices:** if you study on both, the copies are **merged**. Nothing is lost: the most recent review of each word wins, and learned words and practice counts are combined.
+- **When it syncs:** changes upload about 2 seconds after they happen, and your other device's work is pulled in when you return to the app. Offline study syncs once you're back online.
+- **Sign out & clear this device** is for shared phones.
+
+The publishable key is meant to be public. The data is protected by the row-level security policies in `schema.sql`. Never put the `service_role` / secret key in the app.
 
 ## Editing the word list
 
@@ -68,10 +94,12 @@ Exam-likelihood ratings are estimates based on how often words recur in past Pak
 ```
 src/
   data/        words.json, toolkit.json
-  lib/         daily.ts (word picker), fsrs.ts, quiz.ts, store.tsx, metrics.ts
-  screens/     Home, Learn, Practice, Review, Progress, Library, Toolkit
+  lib/         daily.ts (word picker), fsrs.ts, quiz.ts, store.tsx, metrics.ts,
+               cloud.ts + account.tsx (Supabase accounts & sync), sync.ts (merge)
+  screens/     Home, Learn, Practice, Review, Progress, Library, Toolkit, Account
   components/  shared word card parts, modal, icons
 public/        manifest, service worker, icons
+supabase/      schema.sql (cloud progress table + security policies)
 tests/         logic.ts
 ```
 "# Burki-Vocab" 

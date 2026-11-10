@@ -7,6 +7,8 @@ import { counts, dueIds, readiness, streak } from '../lib/metrics';
 import { go } from '../lib/router';
 import { useStore } from '../lib/store';
 import { Brand } from '../App';
+import { useAccount } from '../lib/account';
+import { AccountChip } from './Account';
 
 const PRESETS = [5, 10, 15, 20, 25];
 
@@ -57,6 +59,7 @@ export function TargetPicker({ compact = false }: { compact?: boolean }) {
 export default function Home() {
   const { state, today, updateSettings, setTarget } = useStore();
   const { openWord } = useUI();
+  const account = useAccount();
   const log = state.days[today];
   const words = log?.words ?? [];
   const learned = log?.learned ?? [];
@@ -98,12 +101,17 @@ export default function Home() {
           <button className="icon-btn" onClick={() => go('toolkit')} aria-label="Toolkit">
             <IconToolkit />
           </button>
+          {account.configured && (
+            <button className="icon-btn" onClick={() => go('account')} aria-label={account.user ? `Account: ${account.user.name}` : 'Sign in or create account'}>
+              <AccountChip />
+            </button>
+          )}
         </div>
       </div>
 
       <div>
         <p className="eyebrow">{prettyDate(today)}</p>
-        <h2 style={{ fontSize: 26, marginTop: 4 }}>Assalam-o-Alaikum 👋</h2>
+        <h2 style={{ fontSize: 26, marginTop: 4 }}>Assalam-o-Alaikum{account.user ? `, ${account.user.name}` : ''} 👋</h2>
         <p className="muted small" style={{ marginTop: 2 }}>
           NPFTAS CBT vocabulary · Islamabad Police · NCCIA · FIA · FPSC
         </p>
@@ -147,6 +155,18 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {account.configured && account.ready && !account.user && c.learned + c.known > 0 && (
+        <section className="card flat tight row wrap" style={{ justifyContent: 'space-between' }}>
+          <div>
+            <b>Keep your progress safe</b>
+            <p className="muted small">Create a free account to save your {c.learned + c.known} words and continue on any device.</p>
+          </div>
+          <button className="btn btn-soft" onClick={() => go('account')}>
+            Create account
+          </button>
+        </section>
+      )}
 
       <section className="card">
         <div className="section-title">

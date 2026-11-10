@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
-import { IconHome, IconLearn, IconLibrary, IconPractice, IconProgress, IconReview, IconToolkit } from './components/Icons';
+import { IconHome, IconLearn, IconLibrary, IconPractice, IconProgress, IconReview, IconToolkit, IconUser } from './components/Icons';
 import { UIProvider } from './components/UI';
+import { AccountProvider, useAccount } from './lib/account';
 import { dueIds } from './lib/metrics';
 import { go, useRoute, type Route } from './lib/router';
 import { StoreProvider, useStore } from './lib/store';
+import Account, { SyncPill } from './screens/Account';
 import Home from './screens/Home';
 import Learn from './screens/Learn';
 import Library from './screens/Library';
@@ -16,7 +18,7 @@ export function Brand() {
   return (
     <a
       className="brand"
-      href="#/home"
+      href="#home"
       onClick={(e) => {
         e.preventDefault();
         go('home');
@@ -41,11 +43,13 @@ const NAV: { route: Route; label: string; icon: ReactNode }[] = [
 const EXTRA_NAV: { route: Route; label: string; icon: ReactNode }[] = [
   { route: 'library', label: 'Word bank', icon: <IconLibrary /> },
   { route: 'toolkit', label: 'Exam toolkit', icon: <IconToolkit /> },
+  { route: 'account', label: 'Account', icon: <IconUser /> },
 ];
 
 function Shell() {
   const route = useRoute();
   const { state, today } = useStore();
+  const account = useAccount();
   const due = dueIds(state, today).length;
   const log = state.days[today];
   const learnLeft = log ? log.words.length - log.learned.length : 0;
@@ -72,6 +76,9 @@ function Shell() {
     case 'toolkit':
       screen = <Toolkit />;
       break;
+    case 'account':
+      screen = <Account />;
+      break;
     default:
       screen = <Home />;
   }
@@ -91,9 +98,14 @@ function Shell() {
         {EXTRA_NAV.map((n) => (
           <button key={n.route} className={`side-link ${route === n.route ? 'active' : ''}`} onClick={() => go(n.route)} aria-current={route === n.route ? 'page' : undefined}>
             {n.icon}
-            {n.label}
+            {n.route === 'account' && account.user ? account.user.name : n.label}
           </button>
         ))}
+        {account.user && (
+          <div style={{ padding: '8px 12px' }}>
+            <SyncPill />
+          </div>
+        )}
         <p className="side-foot">
           Made for NPFTAS CBT prep — Islamabad Police, NCCIA, FIA &amp; more.
         </p>
@@ -103,7 +115,7 @@ function Shell() {
         {route !== 'home' && (
           <div className="topbar mobile-only" style={{ marginBottom: 8 }}>
             <Brand />
-            {(route === 'library' || route === 'toolkit') && (
+            {(route === 'library' || route === 'toolkit' || route === 'account') && (
               <button className="btn btn-ghost" onClick={() => go('home')}>
                 Home
               </button>
@@ -130,7 +142,9 @@ export default function App() {
   return (
     <StoreProvider>
       <UIProvider>
-        <Shell />
+        <AccountProvider>
+          <Shell />
+        </AccountProvider>
       </UIProvider>
     </StoreProvider>
   );
