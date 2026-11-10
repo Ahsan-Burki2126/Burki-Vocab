@@ -2,7 +2,7 @@
    Run: npm test   (bundles with esbuild, runs in Node) */
 import type { AppState, Rating } from '../src/types';
 import { WORDS, WORD_BY_ID, LETTERS } from '../src/lib/data';
-import { ensureToday, replaceWord } from '../src/lib/daily';
+import { dayMix, ensureToday, replaceWord } from '../src/lib/daily';
 import { addDays } from '../src/lib/dates';
 import { newCard, reviewCard, previewIntervals } from '../src/lib/fsrs';
 import { buildSession, makeQuestion, blankSentence, type QType } from '../src/lib/quiz';
@@ -31,23 +31,48 @@ console.log('Daily picker (10/day, learn everything each day)');
   let day = '2026-11-08';
   const touched = new Set<string>();
   let allLettersBy = -1;
+  const longestRun = (letters: string[]) => {
+    const idx = Array.from(new Set(letters)).map((l) => LETTERS.indexOf(l)).sort((a, b) => a - b);
+    let best = idx.length ? 1 : 0;
+    let run = 1;
+    for (let i = 1; i < idx.length; i++) {
+      run = idx[i] === idx[i - 1] + 1 ? run + 1 : 1;
+      best = Math.max(best, run);
+    }
+    return best;
+  };
   for (let i = 0; i < 32; i++) {
     s = ensureToday(s, day);
-    const words = s.days[day].words;
+    const log = s.days[day];
+    const words = log.words;
+    check(log.algo === 2, `day ${i + 1}: built by picker v2`);
     const letters = words.map((id) => id[0].toUpperCase());
     const distinct = new Set(letters);
     const remainingLetters = new Set(WORDS.filter((w) => !s.cards[w.id]).map((w) => w.word[0].toUpperCase()));
     check(words.length === Math.min(10, WORDS.length - Object.keys(s.cards).length), `day ${i + 1}: picked ${words.length}`);
     check(distinct.size === Math.min(words.length, remainingLetters.size), `day ${i + 1}: ${distinct.size} distinct letters of ${words.length} (remaining letters ${remainingLetters.size})`);
-    // each pick is the top-scoring unlearned word of its letter
-    for (const l of distinct) {
+    // quality: each pick is within one likelihood tier (12 pts) of the best word left in its letter
+    for (const id of words) {
+      const l = id[0].toUpperCase();
       const best = Math.max(...WORDS.filter((w) => !s.cards[w.id] && w.word[0].toUpperCase() === l).map((w) => w.score));
-      const pickedBest = Math.max(...words.filter((id) => id[0].toUpperCase() === l).map((id) => WORD_BY_ID[id].score));
-      check(pickedBest === best, `day ${i + 1} letter ${l}: picked score ${pickedBest} but best is ${best}`);
+      check(WORD_BY_ID[id].score >= best - 12, `day ${i + 1} ${WORD_BY_ID[id].word}: score ${WORD_BY_ID[id].score} vs best ${best} in ${l}`);
+    }
+    if (remainingLetters.size >= 20) {
+      check(longestRun(letters) <= 3, `day ${i + 1}: letters bunched (${[...distinct].sort().join('')})`);
+    }
+    if (i < 4) {
+      const mix = dayMix(words);
+      const sorted = [...words].sort();
+      check(words.join() !== sorted.join(), `day ${i + 1}: study order is not alphabetical`);
+      check(Object.keys(mix.pos).length >= 2 && Object.keys(mix.polarity).length >= 2, `day ${i + 1}: mixed word types`);
+      console.log(
+        `  day ${i + 1}: ${words.map((id) => WORD_BY_ID[id].word).join(', ')}\n` +
+          `         letters ${[...distinct].sort().join('')} · avg score ${(words.reduce((a, id) => a + WORD_BY_ID[id].score, 0) / words.length).toFixed(1)}` +
+          ` · ${JSON.stringify(mix.pos)} ${JSON.stringify(mix.polarity)}`,
+      );
     }
     letters.forEach((l) => touched.add(l));
     if (allLettersBy < 0 && touched.size === 26) allLettersBy = i + 1;
-    if (i < 3) console.log(`  day ${i + 1}: ${words.map((id) => WORD_BY_ID[id].word).join(', ')}`);
     // learn them all
     for (const id of words) {
       s.cards[id] = newCard(3, day);
@@ -56,12 +81,13 @@ console.log('Daily picker (10/day, learn everything each day)');
     day = addDays(day, 1);
   }
   console.log(`  all 26 letters touched by day ${allLettersBy}`);
-  check(allLettersBy === 3, `expected all letters by day 3, got ${allLettersBy}`);
+  check(allLettersBy > 0 && allLettersBy <= 4, `expected all letters within 4 days, got ${allLettersBy}`);
   check(Object.keys(s.cards).length === WORDS.length, `bank exhausted after 32 days: ${Object.keys(s.cards).length}/${WORDS.length}`);
+  check(ensureToday(blank(10), '2026-11-08').days['2026-11-08'].words.join() === ensureToday(blank(10), '2026-11-08').days['2026-11-08'].words.join(), 'same day → same picks (deterministic)');
 }
 
-// ---------- 2. Carry-over, target change, replace ----------
-console.log('Carry-over / target change / replace');
+// ---------- 2. Carry-over, target change, replace, migration ----------
+console.log('Carry-over / target change / replace / migration');
 {
   let s = blank(10);
   const d1 = '2026-11-08';
@@ -90,19 +116,32 @@ console.log('Carry-over / target change / replace');
   s = ensureToday({ ...s, settings: { ...s.settings, dailyTarget: 5 } }, d2);
   check(s.days[d2].words.length === 5, `target lowered to 5 → ${s.days[d2].words.length}`);
   check(toLearn.every((id) => s.days[d2].words.includes(id)), 'learned words survive target decrease');
-  // stable: calling again returns same object
   check(ensureToday(s, d2) === s, 'ensureToday is idempotent');
 
-  // replace a known word
+  // replace a known word — in place, same letter preferred
   const victim = s.days[d2].words.find((id) => !s.days[d2].learned.includes(id))!;
+  const pos = s.days[d2].words.indexOf(victim);
   s.cards[victim] = { state: 'known', s: 60, d: 3, due: '9999-12-31', last: d2, reps: 0, lapses: 0, learnedOn: d2 };
   const res = replaceWord(s, d2, victim);
   check(!res.state.days[d2].words.includes(victim), 'known word removed from today');
   check(res.state.days[d2].words.length === 5, 'replacement keeps count');
   if (res.replacement) {
-    check(res.replacement[0] === victim[0] || true, 'replacement found');
+    check(res.state.days[d2].words[pos] === res.replacement, 'replacement takes the same slot');
     console.log(`  replaced ${WORD_BY_ID[victim].word} → ${WORD_BY_ID[res.replacement].word}`);
   }
+
+  // migration: a list saved by the old alphabetical picker is re-picked, learned words kept
+  const old = blank(10);
+  const today = '2026-11-10';
+  const oldWords = ['abate', 'benevolent', 'callous', 'deter', 'eloquent', 'frugal', 'gullible', 'haughty', 'imminent', 'jovial'];
+  old.cards.abate = newCard(3, today);
+  old.days[today] = { words: oldWords, learned: ['abate'], target: 10, practiceAnswered: 3, practiceCorrect: 2, reviewed: 0 };
+  const migrated = ensureToday(old, today).days[today];
+  check(migrated.algo === 2, 'old list migrated to picker v2');
+  check(migrated.words[0] === 'abate' && migrated.learned.join() === 'abate', 'learned word kept first after migration');
+  check(migrated.words.length === 10 && new Set(migrated.words.map((id) => id[0])).size === 10, 'migrated list has 10 distinct letters');
+  check(migrated.practiceAnswered === 3, 'practice stats kept after migration');
+  console.log(`  migrated: ${migrated.words.map((id) => WORD_BY_ID[id].word).join(', ')}`);
 }
 
 // ---------- 3. Quiz generation for every word ----------

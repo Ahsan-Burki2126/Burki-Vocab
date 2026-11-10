@@ -1,7 +1,7 @@
 import { Ring, useUI } from '../components/UI';
 import { IconArrowRight, IconFlame, IconLibrary, IconToolkit } from '../components/Icons';
 import { LETTERS, WORD_BY_ID, WORDS } from '../lib/data';
-import { lettersCycleDays } from '../lib/daily';
+import { dayMix, lettersCycleDays } from '../lib/daily';
 import { prettyDate } from '../lib/dates';
 import { counts, dueIds, readiness, streak } from '../lib/metrics';
 import { go } from '../lib/router';
@@ -9,6 +9,23 @@ import { useStore } from '../lib/store';
 import { Brand } from '../App';
 
 const PRESETS = [5, 10, 15, 20, 25];
+
+const POS_NAMES: Record<string, [string, string]> = { adj: ['adjective', 'adjectives'], v: ['verb', 'verbs'], n: ['noun', 'nouns'], adv: ['adverb', 'adverbs'] };
+const POL_NAMES: Record<string, string> = { '+': 'positive', '-': 'negative', n: 'neutral' };
+
+function mixLine(ids: string[]): string {
+  if (!ids.length) return '';
+  const m = dayMix(ids);
+  const pos = Object.entries(m.pos)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, n]) => `${n} ${POS_NAMES[k][n === 1 ? 0 : 1]}`)
+    .join(', ');
+  const pol = (['+', '-', 'n'] as const)
+    .filter((k) => m.polarity[k])
+    .map((k) => `${m.polarity[k]} ${POL_NAMES[k]}`)
+    .join(', ');
+  return `Spread across ${m.letters} letters of A–Z, ${m.veryHigh} rated very likely to appear. Mix: ${pos} · ${pol}.`;
+}
 
 export function TargetPicker({ compact = false }: { compact?: boolean }) {
   const { state, setTarget } = useStore();
@@ -164,8 +181,7 @@ export default function Home() {
           </div>
         )}
         <p className="muted small" style={{ marginTop: 12 }}>
-          Picked for you: the highest exam-likelihood unlearned word from each of {Math.min(todayLetters.size, 26)} different letters. Practice
-          today covers only these words.
+          {mixLine(words)} Learn goes in this order — strongest exam words first. Practice today covers only these words.
         </p>
       </section>
 

@@ -42,6 +42,8 @@ export interface DayLog {
   practiceAnswered: number;
   practiceCorrect: number;
   reviewed: number;
+  /** Version of the daily picker that built this list (see PICKER_VERSION). */
+  algo?: number;
 }
 
 export interface WordStat {

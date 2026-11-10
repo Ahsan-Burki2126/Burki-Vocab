@@ -231,8 +231,9 @@ export default function Progress() {
         </p>
         <p className="small muted">
           Each word carries an exam-likelihood rating. It is an estimate based on how often the word turns up in past papers — not an official
-          NPFTAS figure. Daily picks take the highest-rated unlearned word from as many different letters as your target allows, rotating
-          letters so the whole alphabet is touched within a few days. Reviews are scheduled with the FSRS spaced-repetition algorithm.
+          NPFTAS figure. Each day's picks are the highest-rated unlearned words, one per letter, scattered across the whole alphabet
+          rather than in A–Z order, with a balanced mix of adjectives, verbs and nouns and of positive and negative words. Letters rotate so
+          the whole alphabet is covered within a few days. Reviews are scheduled with the FSRS spaced-repetition algorithm.
         </p>
       </section>
     </div>
